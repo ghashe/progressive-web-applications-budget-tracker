@@ -1,5 +1,5 @@
 // Defining which files we would like to cache
-const fileToCache = [
+const FILES_TO_CACHE = [
   "/",
   "manifest.json",
   "index.html",
@@ -11,19 +11,18 @@ const fileToCache = [
   "icons/icon-512x512.png",
 ];
 
-// setting up cacheName as a global constant to help keep track of which cache to use.
-const cacheName = "static-cache-v2";
-
-const dataCacheName = "data-cache-v1";
+// Setting up CACHE_NAME and DATA_CACHE_NAME as a global constant to help keep track of which cache to use.
+const CACHE_NAME = "static-cache-v2";
+const DATA_CACHE_NAME = "data-cache-v1";
 
 // Installing the service worker by using the self keyword, so that the application can instantiate listeners on the service worker and can use the cache.
 self.addEventListener("install", function (event) {
   event.waitUntil(
-    caches.open(cacheName).then((cache) => {
+    caches.open(CACHE_NAME).then((cache) => {
       console.log(
         "A pre-cached version of your files has been successfully created!"
       );
-      return cache.addAll(fileToCache);
+      return cache.addAll(FILES_TO_CACHE);
     })
   );
   self.skipWaiting();
@@ -35,7 +34,7 @@ self.addEventListener("activate", function (event) {
     caches.keys().then((keylist) => {
       return Promise.all(
         keylist.map((key) => {
-          if (key !== cacheName && key !== dataCacheName) {
+          if (key !== CACHE_NAME && key !== DATA_CACHE_NAME) {
             console.log("Getting rid of old cache data!", key);
             return caches.delete(key);
           }
@@ -51,7 +50,7 @@ self.addEventListener("activate", function (event) {
     if (event.request.url.includes("/api/")) {
       event.respondWith(
         caches
-          .open(dataCacheName)
+          .open(DATA_CACHE_NAME)
           .then((cache) => {
             return fetch(event.request)
               .then((response) => {
