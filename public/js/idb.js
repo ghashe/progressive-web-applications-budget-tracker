@@ -1,4 +1,4 @@
-// The db variable declaration
+// Create a variable to hold the database connection
 let db;
 
 // Establish a connection to an IndexedDB database named 'budget' and setting the version to 1.
@@ -7,15 +7,16 @@ const request = indexedDB.open("budget", 1);
 request.onupgradeneeded = function (event) {
   // Create a database reference
   const db = event.target.result;
-  // Make a new object store (table) called "awaiting" with a primary key of sorts that auto increments
-  db.createObjectStore("awaiting", { autoIncrement: true });
+  // Make a new object store (table) called "new_record" with a primary key of sorts that auto increments
+  db.createObjectStore("new_record", { autoIncrement: true });
 };
 
+// In the event of a successful outcome
 request.onsuccess = function (event) {
   db = event.target.result;
 
   if (navigator.onLine) {
-    checkDatabase();
+    uploadBudget();
   }
 };
 
@@ -24,31 +25,31 @@ request.onerror = function (event) {
   console.log("Sorry!" + event.target.errorCode);
 };
 
-function recordSaving(record) {
-  // Adding a transaction with read-write rights to the awaiting database
-  const transaction = db.transaction("awaiting", "readwrite");
+function saveRecord(record) {
+  // Adding a transaction with read-write rights to the new_record database
+  const transaction = db.transaction(["new_record"], "readwrite");
 
-  const hold = transaction.objectStore("awaiting");
+  const budgetObjectStore = transaction.objectStore("new_record");
 
-  // With the add method, you can add a record to your hold.
-  hold.add(record);
+  // With the add method, you can add a record to your budgetObjectStore.
+  budgetObjectStore.add(record);
 }
 
-function testDatabase() {
-  // Make a transaction in the awaiting database
-  const transaction = db.transaction("awaiting", "readwrite");
+function uploadBudget() {
+  // Make a transaction in the new_record database
+  const transaction = db.transaction("new_record", "readwrite");
 
-  // Getting access to the awaiting hold object
-  const hold = transaction.objectStore("awaiting");
+  // Getting access to the new_record budgetObjectStore object
+  const budgetObjectStore = transaction.objectStore("new_record");
 
-  // Store all records in a variable after retrieving them from the hold
-  const getAllRecords = hold.getAllRecords();
+  // Store all records in a variable after retrieving them from the budgetObjectStore
+  const getAll = budgetObjectStore.getAll();
 
-  getAllRecords.onsuccess = function () {
-    if (getAllRecords.result.length > 0) {
+  getAll.onsuccess = function () {
+    if (getAll.result.length > 0) {
       fetch("/api/transaction/bulk", {
         method: "POST",
-        body: JSON.stringify(getAllRecords.result),
+        body: JSON.stringify(getAll.result),
         headers: {
           Accept: "application/json, text/plain, */*",
           "Content-Type": "application/json",
@@ -56,18 +57,18 @@ function testDatabase() {
       })
         .then((response) => response.json())
         .then(() => {
-          // Create a transaction in your awaiting database if successful
-          const transaction = db.transaction("pending", "readwrite");
+          // Create a transaction in your new_record database if successful
+          const transaction = db.transaction("new_record", "readwrite");
 
-          // Get access to the awaiting object hold
-          const hold = transaction.objectStore("awaiting");
+          // Get access to the new_record object budgetObjectStore
+          const budgetObjectStore = transaction.objectStore("new_record");
 
-          // Make sure all items in your hold are cleared
-          hold.cleear();
+          // Make sure all items in your budgetObjectStore are cleared
+          budgetObjectStore.cleear();
         });
     }
   };
 }
 
 // Await the return of the app
-window.addEventListener("online", testDatabase);
+window.addEventListener("online", uploadBudget);
