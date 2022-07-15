@@ -1,4 +1,4 @@
-// defining file-to-catch variable
+// Defining which files we would like to cache
 const fileToCache = [
   "/",
   "manifest.json",
@@ -11,9 +11,12 @@ const fileToCache = [
   "icons/icon-512x512.png",
 ];
 
+// setting up cacheName as a global constant to help keep track of which cache to use.
 const cacheName = "static-cache-v2";
+
 const dataCacheName = "data-cache-v1";
 
+// Installing the service worker by using the self keyword, so that the application can instantiate listeners on the service worker and can use the cache.
 self.addEventListener("install", function (event) {
   event.waitUntil(
     caches.open(cacheName).then((cache) => {
@@ -26,6 +29,7 @@ self.addEventListener("install", function (event) {
   self.skipWaiting();
 });
 
+// Adding an event listener to the activate event
 self.addEventListener("activate", function (event) {
   event.waitUntil(
     caches.keys().then((keylist) => {
@@ -41,7 +45,7 @@ self.addEventListener("activate", function (event) {
   );
   self.clients.claim();
 
-  // fetch
+  // Creating an additional event listener for cleaning up old service workers that have already been managed, and for adding necessary files to the cache
   self.addEventListener("fetch", function (event) {
     // Keep a cache of successful API calls
     if (event.request.url.includes("/api/")) {
