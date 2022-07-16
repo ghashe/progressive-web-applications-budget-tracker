@@ -58,23 +58,22 @@
     <script src="js/index.js"></script>
     <script src="js/idb.js"></script>
     <script src="./service-worker.js"></script>
-  </body>
-  <script>
-    // Adding a function that tells the browser that we're using a service worker and explains where to find the relevant code.
-    (function () {
+    <script>
       if ("serviceWorker" in navigator) {
         navigator.serviceWorker
-          .register("./service-worker.js")
-          .then(() =>
-            console.log("The Service Worker has been registered successfully.")
-          )
-          .catch((error) =>
-            console.log(
-              "An error occurred during registration for the Service Worker:",
-              error
-            )
-          );
+          .register("service-worker.js")
+          .then((registration) => {
+            console.log("Service Worker Registered!");
+          })
+          .catch((error) => {
+            console.log("Service Worker Registration Failed!");
+            console.log(error);
+          });
       }
-    })();
-  </script>
+    </script>
+  </body>
+
+  // Adding a function that tells the browser that we're using a service worker
+  and explains where to find the relevant code.
 </html>
+<!-- <script src="../routes/api.js"></script> -->

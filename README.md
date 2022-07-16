@@ -7,10 +7,12 @@
 - [Description](#description)
 - [Website Preview](#website-preview)
 - [Installation and Deployment](#installation-and-deployment)
+- [Source Code and Deployed App links](#source-code-and-deployed-app-links)
 - [Usage](#usage)
 - [Features](#features)
 - [Sections](#sections)
-- [Tools Used](#tools-used)
+- [Technologies](#technologies)
+- [Dependencies](#dependencies)
 - [Contributing](#contributing)
 - [License](#license)
 - [Questions](#questions)
@@ -36,11 +38,32 @@ In order to use this application locally;
 
 ## Deployment
 
+1. Create a MongoDB Atlas account
+2. Create production database in Atlas
+3. Set up the environment variable in Heroku
+
+```
+heroku create
+```
+
+4. Connect production database to App
+5. Once everything looks correct, we'll deploy the app to the Heroku accounts.
+
+```
+  git add -A
+  git commit -m 'Deploying'
+  deploy to heroku
+  git push heroku main
+```
+
+## Source code and deployed app links
+
 The app is also live at the following link:
 
 - [live on Heroku](https://lit-mountain-19685.herokuapp.com/)
 
-- You can clone the most recent version of repo into your machine
+You can clone the most recent version of repo into your machine
+
 - [Github](https://github.com/ghashe/progressive-web-applications-budget-tracker)
 
 ## Usage
@@ -66,22 +89,28 @@ And then provide the following information for the transactions to be added as d
 ⚡️ Easy to use  
 ⚡️ Easy to modify
 
-## Tools Used
+## Technologies
 
 # 🛠️
 
-    ✔️ HTM
+    ✔️ HTML5
     ✔️ CSS
+    ✔️ Bootstrap
+    ✔️ jQuer
     ✔️ JavaScript ES6
-    ✔️ Node.js
-    ✔️ Express.js
-    ✔️ Compression
-    ✔️ Morgan
+    ✔️ Express
+    ✔️ MongoDB
     ✔️ Mongoose
-    ✔️ NoSQL
-    ✔️ mongoDB
+    ✔️ IndexedDB
     ✔️ Heroku (hosting platform)
     ✔️ MongoDB Atlas (a Heroku add-on for hosting the NoSQL database)
+
+## Dependencies
+
+    ✔️ compression: "^1.7.4",
+    ✔️ express": "^4.17.1",
+    ✔️ mongoose": "^5.5.15",
+    ✔️ morgan": "^1.9.1"
 
 ## Contributing
 
